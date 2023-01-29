@@ -46,7 +46,7 @@ function Typingengine (){
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchNewQuote();
   }, []);
 
