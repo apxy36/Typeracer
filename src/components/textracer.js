@@ -20,25 +20,46 @@ function Typingengine (){
     const [racestatus, setracestatus] = useState("");
     const [quote, setQuote] = useState("");
     //alert('yes')
-    useEffect(() => {
-    fetch("http://api.quotable.io/random")
-      .then(res => res.json())
-      .then(
-        (quote) => {
-          setQuote(quote.content);  
-        }
-      )
-  },[]);
+  //   useEffect(() => {
+  //   fetch("http://api.quotable.io/random")
+  //     .then(res => res.json())
+  //     .then(
+  //       (quote) => {
+  //         setQuote(quote.content);  
+  //       }
+  //     )
+  // },[]);
+  const [data, setData] = React.useState(null);
 
-  let fetchNewQuote = () => {
-    fetch("http://api.quotable.io/random")
-      .then(res => res.json())
-      .then(
-        (quote) => {
-          setQuote(quote.content);  
-        }
-      )
+  async function fetchNewQuote() {
+    try {
+      const response = await fetch("https://api.quotable.io/random");
+      const { statusCode, statusMessage, ...data } = await response.json();
+      if (!response.ok) throw new Error(`${statusCode} ${statusMessage}`);
+      setData(data);
+      setQuote(data.content);
+    } catch (error) {
+      // If the API request failed, log the error to console and update state
+      // so that the error will be reflected in the UI.
+      console.error(error);
+      setData({ content: "Opps... Something went wrong" });
+    }
   }
+
+  React.useEffect(() => {
+    fetchNewQuote();
+  }, []);
+
+  // let fetchNewQuote = () => {
+  //   fetch("http://api.quotable.io/random")
+  //     .then(res => res.json())
+  //     .then(
+  //       (quote) => {
+  //         setQuote(quote.content);  
+  //       }
+  //     )
+  // }
+  if (!data) return null;
   if (!quote) return null;
   const origstr = quote;
 
@@ -71,10 +92,11 @@ function Typingengine (){
 //<div className = "generaltext"><p style ="color:greenyellow" id="completed"></p><p className="currenttext" id="current"></p><p>id = "incomplete"></p></div>
     const generatetext = () => {
         fetchNewQuote();
+        if(!data) return null;
         if (!quote) return null;
+
     }
    
-
     const resetText = () => {
         document.getElementById("completed").innerHTML = '';
             document.getElementById("current").innerHTML = origstr.at(0);
@@ -130,11 +152,8 @@ function Typingengine (){
     return(
 <div>
     <br></br>
-    <div></div>
     <br></br>
-    <div className = "generaltext"
-    
-   >
+    <div className = "generaltext">
         
 
     <div><span className="complete" id="completed">
@@ -207,7 +226,7 @@ function Typingengine (){
                 wpm = (((wordcount) / finaltime) * 60).toFixed(0);
                 
                 accuracy = Math.max(((origstr.length - incorrectcount) / origstr.length * 100).toFixed(1),0);
-                document.getElementById("wordsperminute").innerHTML = wpm;
+                //document.getElementById("wordsperminute").innerHTML = wpm;
 
                 //alert(((origstr.length - incorrectcount) / origstr.length) * 100 + '%');
                 
