@@ -92,16 +92,18 @@ function Typingengine (){
 //<div className = "generaltext"><p style ="color:greenyellow" id="completed"></p><p className="currenttext" id="current"></p><p>id = "incomplete"></p></div>
     const generatetext = () => {
         fetchNewQuote();
+        resetText();
         if(!data) return null;
         if (!quote) return null;
 
     }
    
     const resetText = () => {
+      document.getElementById("name-input").value = '';
         document.getElementById("completed").innerHTML = '';
             document.getElementById("current").innerHTML = origstr.at(0);
             document.getElementById("incompletetext").innerHTML = origstr.slice(1);
-            document.getElementById("name-input").value = '';
+            
             completestr = '';
             currentstr = origstr.at(0);
             incompletestr = origstr.slice(1);
@@ -184,6 +186,8 @@ function Typingengine (){
             if (e.key === "Escape"){
                 resetText2();
             }
+
+            
         }
         }
         onInput={(e) => {
@@ -205,6 +209,7 @@ function Typingengine (){
 
             } else {
             [completestr, incompletestr, currentstr] = Backspaced(nameInput.value, origstr);
+            document.getElementById("current").style.backgroundColor = 'yellow';
               backspacebool = false;
             }
             
