@@ -82,6 +82,7 @@ function Typingengine (){
     
     let backspacebool = false;
     const d = new Date();
+    const d2 = new Date();
     
     
     //document.getElementById("test1").innerHTML = "hello";
@@ -140,14 +141,13 @@ function Typingengine (){
     }
     
     function openracestatus(){
-        startingtime = d.getTime();
+        startingtime = Date.now();
         setracestatus("started");
     }
     function closeracestatus(){
-        endingtime = d.getTime();
-        finaltime = (Math.max((endingtime - startingtime) / 1000, 0)).toFixed(2);
+        endingtime = Date.now();
+        finaltime = ((endingtime - startingtime) / 1000).toFixed(2);
         setracestatus("over");
-        
         
     }
     
