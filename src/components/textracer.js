@@ -6,11 +6,14 @@ import Wordcounter from "./wordcounter";
 import Generatebutton from "./generatequote";
 import Racecar from "./racecar.png";
 import Racetrack from "./racetrack2.png";
+import Char from "./textlogger";
 let incorrectcount = 0;
 let startingtime = 0;
 let finaltime = 0;
 let wpm = 0;
 let racecarpos = 0;
+let texttimearray = [];
+
 
 // const teststr = QuotableAPI();
 // alert(teststr);
@@ -19,6 +22,7 @@ function Typingengine (){
     const nameInput = document.getElementById("name-input"); 
     const [racestatus, setracestatus] = useState("");
     const [quote, setQuote] = useState("");
+    const [initial, setInitial] = useState(true);
     //alert('yes')
   //   useEffect(() => {
   //   fetch("http://api.quotable.io/random")
@@ -48,6 +52,7 @@ function Typingengine (){
 
   useEffect(() => {
     fetchNewQuote();
+    setInitial(true);
   }, []);
 
   // let fetchNewQuote = () => {
@@ -83,6 +88,9 @@ function Typingengine (){
     let backspacebool = false;
     const d = new Date();
     const d2 = new Date();
+  //var audio = new Audio('sfx.mp3');
+
+  
     
     
     //document.getElementById("test1").innerHTML = "hello";
@@ -143,8 +151,12 @@ function Typingengine (){
     function openracestatus(){
         startingtime = Date.now();
         setracestatus("started");
+        if (initial === false){
+          
+        }
     }
     function closeracestatus(){
+        setInitial(false);
         endingtime = Date.now();
         finaltime = ((endingtime - startingtime) / 1000).toFixed(2);
         setracestatus("over");
@@ -178,6 +190,7 @@ function Typingengine (){
             
         }} 
         onKeyDown={(e) => {
+          //audio.play();
             if (e.key === "Backspace") {
                 //alert('Backspace is Pressed!');
                 backspacebool = true;
@@ -203,6 +216,8 @@ function Typingengine (){
             //currentstr = document.getElementById("current");
             if (nameInput.value.at(-1) !== currentstr){
                 incorrectcount += 1;
+            } else {
+              texttimearray.append
             }
             [completestr, incompletestr, currentstr] = Updatecurrentcharacter(nameInput.value, currentstr, origstr);
             //alert(currentstr + '2')
