@@ -7,22 +7,27 @@ import Generatebutton from "./generatequote";
 import Racecar from "./racecar.png";
 import Racetrack from "./racetrack2.png";
 import Char from "./textlogger";
+import Replaybutton from "./replaybutton";
+import ReplayAgainstSelfbutton from "./replayagainstyourself";
 let incorrectcount = 0;
 let startingtime = 0;
+let starttime = null;
 let finaltime = 0;
 let wpm = 0;
 let racecarpos = 0;
 let texttimearray = [];
+let replaystring = "";
 
 
 // const teststr = QuotableAPI();
 // alert(teststr);
 function Typingengine (){
     const [inputvalue, setinputvalue] = useState("");
-    const nameInput = document.getElementById("name-input"); 
+    //const nameInput = document.getElementById("name-input"); 
     const [racestatus, setracestatus] = useState("");
     const [quote, setQuote] = useState("");
     const [initial, setInitial] = useState(true);
+    const [replaystate, setreplaystate] = useState(false);
     //alert('yes')
   //   useEffect(() => {
   //   fetch("http://api.quotable.io/random")
@@ -72,6 +77,9 @@ function Typingengine (){
     let completestr = '';
     let currentstr = origstr.at(completestr.length);
     let incompletestr = origstr.slice(1);
+
+    let replaycompletestr = '';
+    let replayincompletestr = '';
     
     let wordcount = 0;
     let accuracy;
@@ -81,7 +89,6 @@ function Typingengine (){
   // http://api.quotable.io/random
 
   
-    
     
     let endingtime = 0;
     
@@ -104,7 +111,6 @@ function Typingengine (){
         resetText();
         if(!data) return null;
         if (!quote) return null;
-
     }
    
     const resetText = () => {
@@ -112,8 +118,13 @@ function Typingengine (){
         document.getElementById("completed").innerHTML = '';
             document.getElementById("current").innerHTML = origstr.at(0);
             document.getElementById("incompletetext").innerHTML = origstr.slice(1);
-            
+            document.getElementById("name-input").type = "text";
+            //document.getElementById("replaystr").innerHTML = '';
+            document.getElementById("replaycompleted").innerHTML = '';
+      document.getElementById("replayincomplete").innerHTML = '';
             completestr = '';
+            setreplaystate(false);
+            texttimearray = [];
             currentstr = origstr.at(0);
             incompletestr = origstr.slice(1);
             incorrectcount = 0;
@@ -124,8 +135,67 @@ function Typingengine (){
             wpm = 0;
             racecarpos = 0;
             document.getElementById("racer").style.marginLeft = 0 + "px";
+            document.getElementById("current").style.backgroundColor = 'yellow';
             //document.getElementById("Wordcounter").innerHTML = 0;
             setracestatus("");
+    }
+
+    const replaytext = () => {
+      setreplaystate(true);
+      document.getElementById("replaycompleted").style.whiteSpace = "pre-wrap";
+      document.getElementById("replayincomplete").style.whiteSpace = "pre-wrap";
+      document.getElementById("name-input").type = "hidden";
+      replayincompletestr = '';
+      replaycompletestr = '';
+      replaystring = '';
+      document.getElementById("replaycompleted").innerHTML = '';
+      document.getElementById("replayincomplete").innerHTML = '';
+      
+      //document.getElementById("replaystr").innerHTML = '';
+      //let data = JSON.stringify(texttimearray);
+      //alert(data);
+      //resetText2();
+      let time = null;
+      // let test = new KeyboardEvent("keydown", {key: "H"});
+      // document.dispatchEvent(test);
+      for (let chars = 0; chars < texttimearray.length; chars++){
+      
+        let character = texttimearray[chars];
+        if(time === null){
+          time = character.time;
+        } //else if (chars >= 1) {
+        //   time = texttimearray[chars - 1].time;
+        // }
+        //alert(time);
+        //time = null ? time = character.timestamp : time = texttimearray[chars - 1].timestamp;
+        //alert(chars);
+        //alert(JSON.stringify(character), character.timestamp - time);
+        setTimeout(
+          () => {
+            //alert(character.timestamp - time);
+
+            //  let event = new KeyboardEvent("keydown", {key: character.letter});
+            //  //alert("yes")
+            //  document.dispatchEvent(event);
+            replaystring = replaystring + character.letter;
+            replaycompletestr = replaystring;
+            replayincompletestr = origstr.slice(replaycompletestr.length);
+            
+            //alert(character.letter);
+            document.getElementById("replaycompleted").innerHTML = replaycompletestr;
+            document.getElementById("replayincomplete").innerHTML = replayincompletestr;
+            //alert()
+            
+          }, character.time - time
+        );
+
+      }
+
+      //document.getElementById("name-input").type = "text";
+    }
+
+    const Replayagainstself = () => {
+
     }
 
     function resetText2(){
@@ -133,6 +203,7 @@ function Typingengine (){
             document.getElementById("current").innerHTML = origstr.at(0);
             document.getElementById("incompletetext").innerHTML = origstr.slice(1);
             document.getElementById("name-input").value = '';
+            texttimearray = [];
             completestr = '';
             currentstr = origstr.at(0);
             incompletestr = origstr.slice(1);
@@ -144,6 +215,7 @@ function Typingengine (){
             wpm = 0;
             racecarpos = 0;
             document.getElementById("racer").style.marginLeft = 0 + "px";
+            document.getElementById("current").style.backgroundColor = 'yellow';
             //document.getElementById("Wordcounter").innerHTML = 0;
             setracestatus("");
     }
@@ -162,9 +234,28 @@ function Typingengine (){
         setracestatus("over");
         
     }
+
+    function addchar(letter){
+      
+      if (starttime === null){
+        starttime = Date.now();
+      }
+
+      let timestamp = Date.now() - starttime;
+      texttimearray.push(new Char(timestamp,letter));
+    }
     
     return(
 <div>
+  
+  {replaystate === true && <div className="generaltext">
+         <span className="replaycomplete" id="replaycompleted">
+        
+        </span><span id = "replayincomplete"></span>
+        
+        </div>}
+       
+      
     <br></br>
     <br></br>
     <div className = "generaltext">
@@ -181,9 +272,11 @@ function Typingengine (){
         <br></br>
         <br></br>
         <input
-        className="input"
+        className="input no-outline"
         type="text"
+
         id="name-input"
+        
         value={inputvalue}
         onChange={(e) => {
             setinputvalue(e.target.value)
@@ -217,7 +310,8 @@ function Typingengine (){
             if (nameInput.value.at(-1) !== currentstr){
                 incorrectcount += 1;
             } else {
-              texttimearray.append
+              addchar(nameInput.value.at(-1));
+              //texttimearray.append
             }
             [completestr, incompletestr, currentstr] = Updatecurrentcharacter(nameInput.value, currentstr, origstr);
             //alert(currentstr + '2')
@@ -268,6 +362,8 @@ function Typingengine (){
       <Resetbutton onResetting={resetText}/>
       <br></br>
       <Generatebutton onGenerating={generatetext}/>
+      {racestatus === "over" && <Replaybutton onReplaying={replaytext}/>}
+      {racestatus === "over" && <ReplayAgainstSelfbutton onReplayingSelf={Replayagainstself}/>}
       <br></br>
       {racestatus=== "over" && <div className="stats">
       {racestatus === "over" && <span>Number of Incorrect characters:</span>}
@@ -282,6 +378,7 @@ function Typingengine (){
      <br></br>
       <img src={Racetrack} className="racetrack" id="track" alt=""></img>
        <img src={Racecar} className="racecar" id="racer" alt = ""></img>
+       
 </div>
     );
 

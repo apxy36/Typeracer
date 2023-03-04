@@ -48,7 +48,7 @@ function Startingbutton (props) {
     
 return (
     <div>
-<div className = 'card'>
+<div>
       {!raceisopen && < Startbutton onClicking = {openconfirmationstate} />}
       { confirmationisopen && <Modal onCancel = {cancellingcompoundfunc} onConfirm = {confirmingcompoundfunc}/>}
       { confirmationisopen && <Backdrop onCancel = {closeconfirmationstate}/>}
