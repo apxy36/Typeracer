@@ -454,25 +454,33 @@ const Replaybesttext = () => { //this is the code for replaying against self, it
     document.getElementById("incompletetext").innerHTML = "";
     setreplayracestate(false);
     setracestatus("over");
-if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run in the array
-      if (bestrunstate.timearray[bestrunstate.timearray.length - 1].time < finaltime){
+    if(localStorage.getItem("bestrun") !== null){
+      setbestrunstate(JSON.parse(localStorage.getItem("bestrun")));
+      alert(localStorage.getItem("bestrun"));
+    }
+if (bestrunstate.timearray.length !== 0){
+   //decides whether to store the new run in the array
+   //alert(bestrunstate.timearray[bestrunstate.timearray.length - 1].time);
+      if (bestrunstate.timearray[bestrunstate.timearray.length - 1].time > finaltime){
         setbestrunstate(() => ({
           timearray: texttimearray,
           str: origstr,
         }));
       }
+      localStorage.setItem("bestrun", JSON.stringify(bestrunstate));
     } else {
       setbestrunstate(() => ({
           timearray: texttimearray,
           str: origstr,
         }));
+        localStorage.setItem("bestrun", JSON.stringify(bestrunstate));
     }
     
   }
   function Storebestrun(){
     const [storestate, setStorestate] = useState(false);
     useEffect(()=> {
-      localStorage.setItem("bestrun", bestrunstate); //should stringify once code is ready
+      localStorage.setItem("bestrun", JSON.stringify(bestrunstate)); //should stringify once code is ready
     }, [storestate]);
     
   }
@@ -488,7 +496,7 @@ if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run
 
   return (
     <div>
-      {racestatus === "over" && <Storebestrun />}
+      
       {solereplaystate && <Replayer/>}
       {replaystate && <div className="generaltext">
         <span className="replaycomplete" id="replaycompleted">
