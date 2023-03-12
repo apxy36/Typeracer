@@ -342,7 +342,7 @@ if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run
   return (
     <div>
 
-      {replaystate === true && <div className="generaltext">
+      {replaystate && <div className="generaltext">
         <span className="replaycomplete" id="replaycompleted">
 
         </span><span id="replayincomplete"></span>
