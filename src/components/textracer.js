@@ -78,6 +78,10 @@ function Typingengine() {
   if (!data) return null; //this makes sure that the UI doesnt load before the quote does
   if (!quote) return null;
   let origstr = quote;
+  if (replaystate){
+    origstr = bestrunstate.str;
+    //alert("ok");
+  }
 
 
   let completestr = '';
@@ -165,6 +169,7 @@ const handleClearInput = () => {
   document.getElementById("completed").innerHTML = ''; 
   document.getElementById("current").innerHTML = origstring.at(0);
   document.getElementById("incompletetext").innerHTML = origstring.slice(1);
+  origstr = origstring;
 
   // Set the type of the input field to text
   document.getElementById("name-input").type = "text";
@@ -262,7 +267,7 @@ function CountdownTimer() { // Function to countdown before the player replays a
 
   return (
     <div>
-      <h1>{secondsLeft}</h1> // Render the seconds left in an h1 tag
+      <h1>{secondsLeft}</h1> 
     </div>
   );
 }
@@ -284,9 +289,15 @@ function Replayer(){
       // Clear the contents of two elements
       document.getElementById("replaycompleted").innerHTML = "";
       document.getElementById("replayincomplete").innerHTML = "";
-
+      document.getElementById("incompletetext").innerHTML = "";
+      document.getElementById("current").innerHTML = "";
       // Initialize a variable to track the time delay between characters
       let time = null;
+      let string = "";
+      for (let chars = 0; chars < texttimearray.length; chars++) {
+        let character = texttimearray[chars];
+        string = string + character.letter;
+      }
 
       // Loop through each character in the texttimearray array
       for (let chars = 0; chars < texttimearray.length; chars++) {
@@ -305,7 +316,7 @@ function Replayer(){
             // Set the replaycompletestr variable to the full replaystring
             replaycompletestr = replaystring;
             // Set the replayincompletestr variable to the remaining characters in the original string
-            replayincompletestr = origstr.slice(replaycompletestr.length);
+            replayincompletestr = string.slice(replaycompletestr.length);
 
             // Set the innerHTML of two elements to display the completed and incomplete text
             document.getElementById("replaycompleted").innerHTML = replaycompletestr;
@@ -383,7 +394,7 @@ function Replayer(){
 const Replaybesttext = () => { //this is the code for replaying against self, it's quite similar to the normal replay function
     // Set replay race state to true
     setreplayracestate(true);
-
+    setreplayinitstate(false);
     // Initialize replay race with the best run state string
     initreplayrace(bestrunstate.str);
 
@@ -417,6 +428,7 @@ const Replaybesttext = () => { //this is the code for replaying against self, it
   }
   const replayagainstself = () => { //this is the function that clicking the replay against self button calls
     setreplaystate(true);
+    origstr = bestrunstate.str;
     handleClearInput();
     //CountdownTimer();
     //alert(bestrunstate);
@@ -434,7 +446,10 @@ const Replaybesttext = () => { //this is the code for replaying against self, it
   function closeracestatus() {
     endingtime = Date.now(); //gets the end time
     finaltime = ((endingtime - startingtime) / 1000).toFixed(2); //calculates time elaspec during the run
-    
+    //setreplaystate(false);
+    document.getElementById("current").innerHTML = "";
+    document.getElementById("incompletetext").innerHTML = "";
+    setreplayracestate(false);
     setracestatus("over");
 if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run in the array
       if (bestrunstate.timearray[bestrunstate.timearray.length - 1].time < finaltime){
@@ -449,8 +464,14 @@ if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run
           str: origstr,
         }));
     }
+    
   }
-
+  function Storebestrun(){
+    useEffect(()=> {
+      localStorage.setItem("bestrun", bestrunstate); //should stringify once code is ready
+    }, [bestrunstate])
+    
+  }
   function addchar(letter) { //logs the time and chararcter whenever a correct letter is entered
 
     if (starttime === null) { //defines case for first character where the start time may not have been defined yet
@@ -463,7 +484,7 @@ if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run
 
   return (
     <div>
-
+      {racestatus === "over" && <Storebestrun />}
       {solereplaystate && <Replayer/>}
       {replaystate && <div className="generaltext">
         <span className="replaycomplete" id="replaycompleted">
