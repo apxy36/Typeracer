@@ -276,6 +276,7 @@ function CountdownTimer() { // Function to countdown before the player replays a
 
 
 function Replayer(){
+  const [replaystate1, setReplaystate1] = useState(false);
   useEffect(() => {
     // Check if the replaystate variable is true
     if (solereplaystate) {
@@ -329,7 +330,7 @@ function Replayer(){
       // Set the replaystate variable to false to stop the loop from running again
       setreplaystate(false);
     }
-  }, [replaystate]); // This function runs whenever the replaystate variable changes
+  }, [replaystate1]); // This function runs whenever the replaystate variable changes
 
   // Return some HTML elements to display the completed and incomplete text
   return(
@@ -469,9 +470,10 @@ if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run
     
   }
   function Storebestrun(){
+    const [storestate, setStorestate] = useState(false);
     useEffect(()=> {
       localStorage.setItem("bestrun", bestrunstate); //should stringify once code is ready
-    }, [bestrunstate])
+    }, [storestate]);
     
   }
   function addchar(letter) { //logs the time and chararcter whenever a correct letter is entered
