@@ -38,13 +38,13 @@
 // }
 
 
-function Updatecurrentcharacter(input, correctchar, originalstring) {
+function Updatecurrentcharacter(input, correctchar, originalstring) { //code for updating the character, with two cases
   //const incorrects = useContext(Incorrectcontext);
     let resultinput = "",
       currentoutput = "",
       incompleteinput = "";
 
-  if (input.at(-1) === correctchar) {
+  if (input.at(-1) === correctchar) { //updates the strings if the correct character is typed
     //alert(input.at(-1))
     resultinput = originalstring.slice(0,input.length); //try to change this? resultinput = origtext.something? based on currentstr.index
     if (resultinput.length !== originalstring.length) {
@@ -56,7 +56,7 @@ function Updatecurrentcharacter(input, correctchar, originalstring) {
     
     incompleteinput = originalstring.slice(resultinput.length + 1);
     return [resultinput, incompleteinput, currentoutput];
-  } else {
+  } else { //cuts off the incorrect letter and doesnt update the strings
     //const charisincorrect = incorrects.addIncorrect()
     //document.getElementById("print3").innerHTML = incorrectchars;
     document.getElementById("current").style.backgroundColor = 'red';

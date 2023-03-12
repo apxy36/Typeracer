@@ -9,7 +9,7 @@ import Racetrack from "./racetrack2.png";
 import Char from "./textlogger";
 import Replaybutton from "./replaybutton";
 import ReplayAgainstSelfbutton from "./replayagainstyourself";
-let incorrectcount = 0;
+let incorrectcount = 0;   //initialising all variables
 let startingtime = 0;
 let starttime = null;
 let finaltime = 0;
@@ -17,7 +17,7 @@ let wpm = 0;
 let racecarpos = 0;
 let texttimearray = [];
 let replaystring = "";
-let countdown;
+
 
 
 // const teststr = QuotableAPI();
@@ -25,14 +25,14 @@ let countdown;
 function Typingengine() {
   //const [inputvalue, setinputvalue] = useState("");
   //const nameInput = document.getElementById("name-input"); 
-  const [racestatus, setracestatus] = useState("");
-  const [quote, setQuote] = useState("");
-  const [initial, setInitial] = useState(true);
-  const [replaystate, setreplaystate] = useState(false);
-  const [replaybtnstate, setreplaybtnstate] = useState(false);
-  const [bestrunstate, setbestrunstate] = useState({timearray: [], str: ""});
-  const [replayracestate, setreplayracestate] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const [racestatus, setracestatus] = useState(""); //this is to keep track of whether or not you should be typing
+  const [quote, setQuote] = useState(""); //this stores the quote that needs to be typed
+  const [replaystate, setreplaystate] = useState(false); //this keeps track of whether you are replaying or not
+  const [replaybtnstate, setreplaybtnstate] = useState(false); //this keeps track of whether the replay button displays
+  const [bestrunstate, setbestrunstate] = useState({timearray: [], str: ""}); //this keeps track of the best run 
+  const [replayracestate, setreplayracestate] = useState(false); //this keeps track of whether you are racing against self
+  const [inputValue, setInputValue] = useState(""); //this stores the input
+  const [fetchQuotestate, setFetchQuoteState] = useState(true);
   //alert('yes')
   //   useEffect(() => {
   //   fetch("http://api.quotable.io/random")
@@ -45,7 +45,7 @@ function Typingengine() {
   // },[]);
   const [data, setData] = React.useState(null);
 
-  async function fetchNewQuote() {
+  async function fetchNewQuote() {        //this fetches the quote to be typed from the quotable api library
     try {
       const response = await fetch("https://api.quotable.io/random");
       const { statusCode, statusMessage, ...data } = await response.json();
@@ -60,14 +60,9 @@ function Typingengine() {
     }
   }
 
-  useEffect(() => {
-    if(replayracestate === false){
-      fetchNewQuote();
-      //alert("found");
-    }
-    
-    setInitial(true);
-  }, []);
+  useEffect(() => {     //this loads the quote in at appropriate times
+    fetchNewQuote();
+  }, [fetchQuotestate]);
 
   // let fetchNewQuote = () => {
   //   fetch("http://api.quotable.io/random")
@@ -78,7 +73,7 @@ function Typingengine() {
   //       }
   //     )
   // }
-  if (!data) return null;
+  if (!data) return null; //this makes sure that the UI doesnt load before the quote does
   if (!quote) return null;
   let origstr = quote;
 
@@ -91,7 +86,6 @@ function Typingengine() {
   let replayincompletestr = '';
 
   let wordcount = 0;
-  let accuracy;
 
 
 
@@ -102,8 +96,6 @@ function Typingengine() {
   let endingtime = 0;
 
   let backspacebool = false;
-  const d = new Date();
-  const d2 = new Date();
   //var audio = new Audio('sfx.mp3');
 
 
@@ -115,15 +107,15 @@ function Typingengine() {
   // document.getElementById("incomplete").innerHTML = incompletestr;
 
   //<div className = "generaltext"><p style ="color:greenyellow" id="completed"></p><p className="currenttext" id="current"></p><p>id = "incomplete"></p></div>
-  const generatetext = () => {
+  const generatetext = () => { //this is the function which is called to generate new quotes after the initial one
     fetchNewQuote();
     resetText();
+    setFetchQuoteState(true);
     if (!data) return null;
     if (!quote) return null;
   }
 
-  const resetText = () => {
-    document.getElementById("name-input").value = '';
+  const resetText = () => {         //this resets all variables for a new run
     document.getElementById("completed").innerHTML = '';
     document.getElementById("current").innerHTML = origstr.at(0);
     document.getElementById("incompletetext").innerHTML = origstr.slice(1);
@@ -150,25 +142,26 @@ function Typingengine() {
     document.getElementById("racer").style.marginLeft = 0 + "px";
     document.getElementById("current").style.backgroundColor = 'yellow';
     //document.getElementById("Wordcounter").innerHTML = 0;
+    handleClearInput();
     setracestatus("");
   }
 
-  const handleClearClick = () => {
+  const handleClearInput = () => { //this is to clear the input field
     setInputValue("");
     document.getElementById("name-input").value = "";
   };
 
 
-  const initreplayrace = (origstring) => {
+  const initreplayrace = (origstring) => { //this prepares the UI to let the player race against themself
     //document.getElementById("name-input").value = '';
     origstr = origstring;
-    document.getElementById("completed").innerHTML = '';
+    document.getElementById("completed").innerHTML = ''; //these 3 lines of code reset the quote displayed
     document.getElementById("current").innerHTML = origstring.at(0);
     document.getElementById("incompletetext").innerHTML = origstring.slice(1);
     document.getElementById("name-input").type = "text";
     //document.getElementById("replaystr").innerHTML = '';
     setreplayracestate(false);
-    if(replaystate){
+    if(replaystate){ //this is included to prevent the code from referencing null elements which are hidden
       document.getElementById("replaycompleted").innerHTML = '';
     document.getElementById("replayincomplete").innerHTML = '';
     }
@@ -188,13 +181,13 @@ function Typingengine() {
     document.getElementById("current").style.backgroundColor = 'yellow';
     //document.getElementById("Wordcounter").innerHTML = 0;
     setracestatus("replay");
-    handleClearClick();
+    handleClearInput();
     openracestatus();
   }
 
 
 
-function generalreplay(array, origstring){
+function generalreplay(array, origstring){ //this is the replay function
 let time = null;
 document.getElementById("name-input").value = '';
     // let test = new KeyboardEvent("keydown", {key: "H"});
@@ -232,7 +225,7 @@ document.getElementById("name-input").value = '';
 
     }
 }
-  const replaytext = () => {
+  const replaytext = () => { //this is the function called to just replay the text
     setreplaystate(true);
     document.getElementById("replaycompleted").style.whiteSpace = "pre-wrap";
     document.getElementById("replayincomplete").style.whiteSpace = "pre-wrap";
@@ -252,12 +245,11 @@ document.getElementById("name-input").value = '';
     //document.getElementById("name-input").type = "text";
   }
 
-function CountdownTimer() {
+function CountdownTimer() { //this is the function to countdown before the player replays against themself
   const [secondsLeft, setSecondsLeft] = useState(3);
   useEffect(() => {
     const intervalId = setInterval(() => {
       setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
-      countdown = secondsLeft;
     }, 1000);
 
     return () => clearInterval(intervalId);
@@ -276,11 +268,7 @@ function CountdownTimer() {
     </div>
   );
 }
-
-function callback(){
-  alert("Timer finished!");
-}
-const Replaybesttext = () => {
+const Replaybesttext = () => { //this is the code for replaying against self, it's quite similar to the normal replay function
     //sCountdownTimer();
 
    setreplayracestate(true);
@@ -298,15 +286,16 @@ const Replaybesttext = () => {
     generalreplay(bestrunstate.timearray, bestrunstate.str);
 }
 
-  const showreplayagainstself = () => {
+  const showreplayagainstself = () => { //these are to control whether the replay against self button is displayed
     setreplaybtnstate(true);
   }
   const hidereplayagainstself = () => {
     if(replayracestate) {return;}
     setreplaybtnstate(false);
   }
-  const replayagainstself = () => {
+  const replayagainstself = () => { //this is the function that clicking the replay against self button calls
     setreplaystate(true);
+    handleClearInput();
     //CountdownTimer();
     //alert(bestrunstate);
     setreplayracestate(true);
@@ -317,21 +306,16 @@ const Replaybesttext = () => {
 
 
   function openracestatus() {
-    startingtime = Date.now();
+    startingtime = Date.now(); //gets the starting time of the run
     setracestatus("started");
-    if (initial === false) {
-
-    }
   }
   function closeracestatus() {
-    setInitial(false);
-    endingtime = Date.now();
-    finaltime = ((endingtime - startingtime) / 1000).toFixed(2);
+    endingtime = Date.now(); //gets the end time
+    finaltime = ((endingtime - startingtime) / 1000).toFixed(2); //calculates time elaspec during the run
     
     setracestatus("over");
-    alert(bestrunstate);
-if (bestrunstate.timearray.length !== 0){
-      if (bestrunstate.timearray[bestrunstate.timearray.length - 2].time < finaltime){
+if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run in the array
+      if (bestrunstate.timearray[bestrunstate.timearray.length - 1].time < finaltime){
         setbestrunstate(() => ({
           timearray: texttimearray,
           str: origstr,
@@ -345,7 +329,7 @@ if (bestrunstate.timearray.length !== 0){
     }
   }
 
-  function addchar(letter) {
+  function addchar(letter) { //logs the time and chararcter whenever a correct letter is entered
 
     if (starttime === null) {
       starttime = Date.now();
@@ -449,7 +433,7 @@ if (bestrunstate.timearray.length !== 0){
             wordcount = Wordcounter(origstr) + 1;
             wpm = (((wordcount) / finaltime) * 60).toFixed(0);
 
-            accuracy = Math.max(((origstr.length - incorrectcount) / origstr.length * 100).toFixed(1), 0);
+            //accuracy = Math.max(((origstr.length - incorrectcount) / origstr.length * 100).toFixed(1), 0);
             //document.getElementById("wordsperminute").innerHTML = wpm;
 
             //alert(((origstr.length - incorrectcount) / origstr.length) * 100 + '%');
@@ -480,7 +464,7 @@ if (bestrunstate.timearray.length !== 0){
         {racestatus === "over" && <span>Number of Incorrect characters:</span>}
         {racestatus === "over" && <span id="incorrectcount">{incorrectcount}</span>}
         <br></br>
-        {racestatus === "over" && <span>Accuracy:{(((origstr.length - incorrectcount) / origstr.length) * 100).toFixed(2) + '%'}</span>}
+        {racestatus === "over" && <span>Accuracy:{Math.max((((origstr.length - incorrectcount) / origstr.length) * 100).toFixed(2),0) + '%'}</span>}
         <br></br>
         <div>Time: {finaltime}</div>
         {racestatus === "over" && <span>WPM: {wpm}</span>}

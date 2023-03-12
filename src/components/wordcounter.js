@@ -1,4 +1,4 @@
-function Wordcounter (input = ''){
+function Wordcounter (input = ''){ //function for counting words 
   let wordcount = 0;
   let string = input;
   for (let i = 0; i < string.length; i++){

@@ -1,4 +1,4 @@
-function Backspaced (input, originalstring){
+function Backspaced (input, originalstring){ //the function resets the strings to their previous position
   let resultinput = "",
       currentoutput = "",
       incompleteinput = "";
