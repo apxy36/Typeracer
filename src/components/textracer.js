@@ -33,6 +33,8 @@ function Typingengine() {
   const [replayracestate, setreplayracestate] = useState(false); //this keeps track of whether you are racing against self
   const [inputValue, setInputValue] = useState(""); //this stores the input
   const [fetchQuotestate, setFetchQuoteState] = useState(true);
+  const [solereplaystate, setSolereplaystate] = useState(false);
+  const [replayinitstate, setreplayinitstate] = useState(false);
   //alert('yes')
   //   useEffect(() => {
   //   fetch("http://api.quotable.io/random")
@@ -129,9 +131,11 @@ function Typingengine() {
     completestr = '';
     setreplaystate(false);
     setreplayracestate(false);
+    setreplayinitstate(false);
     texttimearray = [];
     currentstr = origstr.at(0);
     incompletestr = origstr.slice(1);
+    setSolereplaystate(false);
     incorrectcount = 0;
     wordcount = 0;
     startingtime = 0;
@@ -152,7 +156,7 @@ function Typingengine() {
   };
 
 
-  const initreplayrace = (origstring) => { //this prepares the UI to let the player race against themself
+  const initreplayrace = (origstring = bestrunstate.str) => { //this prepares the UI to let the player race against themself
     //document.getElementById("name-input").value = '';
     origstr = origstring;
     document.getElementById("completed").innerHTML = ''; //these 3 lines of code reset the quote displayed
@@ -160,11 +164,9 @@ function Typingengine() {
     document.getElementById("incompletetext").innerHTML = origstring.slice(1);
     document.getElementById("name-input").type = "text";
     //document.getElementById("replaystr").innerHTML = '';
+    setreplayinitstate(true);
     setreplayracestate(false);
-    if(replaystate){ //this is included to prevent the code from referencing null elements which are hidden
-      document.getElementById("replaycompleted").innerHTML = '';
-    document.getElementById("replayincomplete").innerHTML = '';
-    }
+    setreplaystate(true);
     setreplaybtnstate(true);
     completestr = '';
     texttimearray = [];
@@ -227,15 +229,7 @@ document.getElementById("name-input").value = '';
 }
   const replaytext = () => { //this is the function called to just replay the text
     setreplaystate(true);
-    document.getElementById("replaycompleted").style.whiteSpace = "pre-wrap";
-    document.getElementById("replayincomplete").style.whiteSpace = "pre-wrap";
-    document.getElementById("name-input").type = "hidden";
-    replayincompletestr = '';
-    replaycompletestr = '';
-    replaystring = '';
-    document.getElementById("replaycompleted").innerHTML = '';
-    document.getElementById("replayincomplete").innerHTML = '';
-    generalreplay(texttimearray, origstr);
+    setSolereplaystate(true);
     //document.getElementById("replaystr").innerHTML = '';
     //let data = JSON.stringify(texttimearray);
     //alert(data);
@@ -268,6 +262,102 @@ function CountdownTimer() { //this is the function to countdown before the playe
     </div>
   );
 }
+
+function Replayer(){
+  useEffect(() => {
+    if (replaystate) {
+      document.getElementById("replaycompleted").style.whiteSpace = "pre-wrap";
+      document.getElementById("replayincomplete").style.whiteSpace = "pre-wrap";
+      document.getElementById("name-input").type = "hidden";
+      let replayincompletestr = "";
+      let replaycompletestr = "";
+      let replaystring = "";
+      document.getElementById("replaycompleted").innerHTML = "";
+      document.getElementById("replayincomplete").innerHTML = "";
+
+      let time = null;
+
+      for (let chars = 0; chars < texttimearray.length; chars++) {
+        let character = texttimearray[chars];
+        if (time === null) {
+          time = character.time;
+        }
+
+        (function (character, time) {
+          setTimeout(() => {
+            replaystring = replaystring + character.letter;
+            replaycompletestr = replaystring;
+            replayincompletestr = origstr.slice(replaycompletestr.length);
+
+            document.getElementById("replaycompleted").innerHTML = replaycompletestr;
+            document.getElementById("replayincomplete").innerHTML = replayincompletestr;
+          }, character.time - time);
+        })(character, time);
+      }
+      setreplaystate(false);
+    }
+  }, [replaystate]);
+
+  return(
+    <div className="generaltext">
+        <span className="replaycomplete" id="replaycompleted" style={{ whiteSpace: "pre-wrap" }}>
+
+        </span><span id="replayincomplete" style={{ whiteSpace: "pre-wrap" }}></span>
+
+      </div>
+  );
+
+}
+
+// function Replayagainstself(){        //botched attempt at trying to use useEffect for replaying against self
+
+//   //const replayRef = useRef();
+//   useEffect(() => {
+//       let replayincompletestr = "";
+//       let replaycompletestr = "";
+//       let replaystring = "";
+
+//     if (replaystate) {
+//       //initreplayrace();
+//       document.getElementById("replaycompleted").style.whiteSpace = "pre-wrap";
+//       document.getElementById("replayincomplete").style.whiteSpace = "pre-wrap";
+//       document.getElementById("name-input").type = "text";
+      
+//       document.getElementById("replaycompleted").innerHTML = "";
+//       document.getElementById("replayincomplete").innerHTML = "";
+      
+//       let time = null;
+
+//       for (let chars = 0; chars < bestrunstate.timearray.length; chars++) {
+//         let character = bestrunstate.timearray[chars];
+//         if (time === null) {
+//           time = character.time;
+//         }
+
+//         (function (character, time) {
+//           setTimeout(() => {
+//             replaystring = replaystring + character.letter;
+//             replaycompletestr = replaystring;
+//             replayincompletestr = bestrunstate.str.slice(replaycompletestr.length);
+
+//             document.getElementById("replaycompleted").innerHTML = replaycompletestr;
+//             document.getElementById("replayincomplete").innerHTML = replayincompletestr;
+//           }, character.time - time);
+//         })(character, time);
+//       }
+//       setreplaystate(false);
+//     }
+//   }, [replayracestate]);
+
+//   return(
+//     <div className="generaltext">
+//         <span className="replaycomplete" id="replaycompleted" style={{ whiteSpace: "pre-wrap" }}>
+
+//         </span><span id="replayincomplete" style={{ whiteSpace: "pre-wrap" }}></span>
+
+//       </div>
+//   );
+// }
 const Replaybesttext = () => { //this is the code for replaying against self, it's quite similar to the normal replay function
     //sCountdownTimer();
 
@@ -290,7 +380,7 @@ const Replaybesttext = () => { //this is the code for replaying against self, it
     setreplaybtnstate(true);
   }
   const hidereplayagainstself = () => {
-    if(replayracestate) {return;}
+    if(replayracestate || replayinitstate) {return;}
     setreplaybtnstate(false);
   }
   const replayagainstself = () => { //this is the function that clicking the replay against self button calls
@@ -298,7 +388,7 @@ const Replaybesttext = () => { //this is the code for replaying against self, it
     handleClearInput();
     //CountdownTimer();
     //alert(bestrunstate);
-    setreplayracestate(true);
+    setreplayinitstate(true);
     //Replaybesttext(); 
     document.getElementById("name-input").type = "text";
   }
@@ -342,13 +432,13 @@ if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run
   return (
     <div>
 
+      {solereplaystate && <Replayer/>}
       {replaystate && <div className="generaltext">
         <span className="replaycomplete" id="replaycompleted">
 
         </span><span id="replayincomplete"></span>
 
       </div>}
-
 
       <br></br>
       <br></br>
@@ -475,7 +565,7 @@ if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run
       <img src={Racecar} className="racecar" id="racer" alt=""></img>
         <br></br><br></br>
 
-      {replayracestate && <CountdownTimer />}
+      {replayinitstate && <CountdownTimer />}
       <br></br>
     </div>
   );
