@@ -236,6 +236,8 @@ function generalreplay(array, origstring) {
   const replaytext = () => { //this is the function called to just replay the text
     setreplaystate(true);
     setSolereplaystate(true);
+    document.getElementById("incompletetext").innerHTML = "";
+      document.getElementById("current").innerHTML = "";
     //document.getElementById("replaystr").innerHTML = '';
     //let data = JSON.stringify(texttimearray);
     //alert(data);
@@ -276,7 +278,7 @@ function CountdownTimer() { // Function to countdown before the player replays a
 function Replayer(){
   useEffect(() => {
     // Check if the replaystate variable is true
-    if (replaystate) {
+    if (solereplaystate) {
       // Set the whiteSpace property of two elements to "pre-wrap" to preserve spacing
       document.getElementById("replaycompleted").style.whiteSpace = "pre-wrap";
       document.getElementById("replayincomplete").style.whiteSpace = "pre-wrap";
@@ -566,9 +568,12 @@ if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run
             }
 
             // Update the completed, current, and incomplete strings on the UI
-            document.getElementById("completed").innerHTML = completestr;
+            if(solereplaystate === false){
+              document.getElementById("completed").innerHTML = completestr;
             document.getElementById("current").innerHTML = currentstr;
             document.getElementById("incompletetext").innerHTML = incompletestr;
+            }
+            
 
             // If a word has been completed, update the word count
             if (nameInput.value.at(-1) === " ") {
