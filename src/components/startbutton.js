@@ -6,7 +6,7 @@ function pressstart(){
 }
 
 return (
-    <div className = "actions">
+    <div className="startbtndiv">
       <button className = 'startbtn' onClick={pressstart}>Start game</button>
       </div>
 )
