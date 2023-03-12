@@ -1,78 +1,37 @@
 
 
-// function Typingtext(input, origstr, backspacebool = false){
+function Updatecurrentcharacter(input, correctchar, originalstring) {
+  // The function takes three parameters: 
+  // input: the string input from the user
+  // correctchar: the correct character to be typed
+  // originalstring: the original string to be typed
 
-
-//     let resultinput = "",
-//       currentoutput = "",
-//       incompleteinput = "";
-//       let correctchar = origstr.at(input.length)
-
-//   if (input.at(-1) == correctchar) {
-//     const currentstring = document.getElementById("current");
-//     document.getElementById("completed").innerHTML = origstr.slice(0,input.length); //try to change this? resultinput = origtext.something? based on currentstr.index
-//     if (resultinput.length !== origstr.length) {
-//       currentoutput = origstr.at(resultinput.length);
-//       document.getElementById("current").style.backgroundColor = 'yellow';
-//     } else {
-//       currentoutput = "";
-//     }
-    
-//     incompleteinput = origstr.slice(resultinput.length + 1);
-//     return [resultinput, incompleteinput, currentoutput];
-//   } else {
-//     //document.getElementById("print3").innerHTML = incorrectchars;
-//     document.getElementById("current").style.backgroundColor = 'red';
-    
-//     document.getElementById("name-input").value = document.getElementById("name-input").value.slice(0,-1);
-//     document.getElementById("completed").innerHTML = input.slice(0,-1);
-//     incompleteinput = origstr.slice(resultinput.length + 1);
-//     currentoutput = correctchar;
-
-//     return(
-//         <div>
-//         <div><span class="generaltext" style ="color:greenyellow" id="completed"></span><span class="currenttext generaltext" id="current"></span><span class="generaltext" id = "incompletetext"></span></div>
-//         </div>
-//     )
-// }
-// }
-
-
-function Updatecurrentcharacter(input, correctchar, originalstring) { //code for updating the character, with two cases
-  //const incorrects = useContext(Incorrectcontext);
-    let resultinput = "",
+  let resultinput = "",
       currentoutput = "",
       incompleteinput = "";
+  // Three empty strings are initialized for later use
 
-  if (input.at(-1) === correctchar) { //updates the strings if the correct character is typed
-    //alert(input.at(-1))
-    resultinput = originalstring.slice(0,input.length); //try to change this? resultinput = origtext.something? based on currentstr.index
-    if (resultinput.length !== originalstring.length) {
+  if (input.at(-1) === correctchar) { // if the input matches the correct character
+    resultinput = originalstring.slice(0,input.length); // set the resultinput to the original string up to the current input
+    if (resultinput.length !== originalstring.length) { // if the result input doesn't match the original string length, then set the currentoutput to the next character in the original string
       currentoutput = originalstring.at(resultinput.length);
-      document.getElementById("current").style.backgroundColor = 'yellow';
+      document.getElementById("current").style.backgroundColor = 'yellow'; // set background color of input to yellow
     } else {
-      currentoutput = "";
+      currentoutput = ""; // if the result input matches the original string length, then set the currentoutput to an empty string
     }
     
-    incompleteinput = originalstring.slice(resultinput.length + 1);
-    return [resultinput, incompleteinput, currentoutput];
-  } else { //cuts off the incorrect letter and doesnt update the strings
-    //const charisincorrect = incorrects.addIncorrect()
-    //document.getElementById("print3").innerHTML = incorrectchars;
-    document.getElementById("current").style.backgroundColor = 'red';
-    document.getElementById("name-input").value = document.getElementById("name-input").value.slice(0,-1);
-    resultinput = input.slice(0,-1);
-    incompleteinput = originalstring.slice(resultinput.length + 1);
-    currentoutput = correctchar;
+    incompleteinput = originalstring.slice(resultinput.length + 1); // set the incompleteinput to the remaining original string after the resultinput
+    return [resultinput, incompleteinput, currentoutput]; // return an array of three values
+  } else { // if the input doesn't match the correct character
+    document.getElementById("current").style.backgroundColor = 'red'; // set the background color of the input to red
+    document.getElementById("name-input").value = document.getElementById("name-input").value.slice(0,-1); // remove the last character of the input
+    resultinput = input.slice(0,-1); // set the resultinput to the input without the last character
+    incompleteinput = originalstring.slice(resultinput.length + 1); // set the incompleteinput to the remaining original string after the resultinput
+    currentoutput = correctchar; // set the currentoutput to the correct character
     
-    // if (resultinput.length !== originalstring.length) {
-    //     document.getElementById("current").style.backgroundColor = 'red';
-    //   } else {
-    //     currentoutput = "";
-    //   }
-    //   incompleteinput = originalstring.slice(resultinput.length)
-    // return [resultinput, incompleteinput, currentoutput];
-    return [resultinput, incompleteinput, currentoutput];
+    return [resultinput, incompleteinput, currentoutput]; // return an array of three values
   }
 }
+
 export default Updatecurrentcharacter;
+// This function is exported to be used in other parts of the program.

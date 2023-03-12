@@ -110,123 +110,124 @@ function Typingengine() {
 
   //<div className = "generaltext"><p style ="color:greenyellow" id="completed"></p><p className="currenttext" id="current"></p><p>id = "incomplete"></p></div>
   const generatetext = () => { //this is the function which is called to generate new quotes after the initial one
-    fetchNewQuote();
-    resetText();
-    setFetchQuoteState(true);
-    if (!data) return null;
-    if (!quote) return null;
-  }
-
-  const resetText = () => {         //this resets all variables for a new run
-    document.getElementById("completed").innerHTML = '';
-    document.getElementById("current").innerHTML = origstr.at(0);
-    document.getElementById("incompletetext").innerHTML = origstr.slice(1);
-    document.getElementById("name-input").type = "text";
-    //document.getElementById("replaystr").innerHTML = '';
-    if(replaystate){
-      document.getElementById("replaycompleted").innerHTML = '';
-    document.getElementById("replayincomplete").innerHTML = '';
-    }
-    
-    completestr = '';
-    setreplaystate(false);
-    setreplayracestate(false);
-    setreplayinitstate(false);
-    texttimearray = [];
-    currentstr = origstr.at(0);
-    incompletestr = origstr.slice(1);
-    setSolereplaystate(false);
-    incorrectcount = 0;
-    wordcount = 0;
-    startingtime = 0;
-    endingtime = 0;
-    finaltime = 0;
-    wpm = 0;
-    racecarpos = 0;
-    document.getElementById("racer").style.marginLeft = 0 + "px";
-    document.getElementById("current").style.backgroundColor = 'yellow';
-    //document.getElementById("Wordcounter").innerHTML = 0;
-    handleClearInput();
-    setracestatus("");
-  }
-
-  const handleClearInput = () => { //this is to clear the input field
-    setInputValue("");
-    document.getElementById("name-input").value = "";
-  };
-
-
-  const initreplayrace = (origstring = bestrunstate.str) => { //this prepares the UI to let the player race against themself
-    //document.getElementById("name-input").value = '';
-    origstr = origstring;
-    document.getElementById("completed").innerHTML = ''; //these 3 lines of code reset the quote displayed
-    document.getElementById("current").innerHTML = origstring.at(0);
-    document.getElementById("incompletetext").innerHTML = origstring.slice(1);
-    document.getElementById("name-input").type = "text";
-    //document.getElementById("replaystr").innerHTML = '';
-    setreplayinitstate(true);
-    setreplayracestate(false);
-    setreplaystate(true);
-    setreplaybtnstate(true);
-    completestr = '';
-    texttimearray = [];
-    currentstr = origstring.at(0);
-    incompletestr = origstring.slice(1);
-    incorrectcount = 0;
-    wordcount = 0;
-    startingtime = 0;
-    endingtime = 0;
-    finaltime = 0;
-    wpm = 0;
-    racecarpos = 0;
-    document.getElementById("racer").style.marginLeft = 0 + "px";
-    document.getElementById("current").style.backgroundColor = 'yellow';
-    //document.getElementById("Wordcounter").innerHTML = 0;
-    setracestatus("replay");
-    handleClearInput();
-    openracestatus();
-  }
-
-
-
-function generalreplay(array, origstring){ //this is the replay function
-let time = null;
-document.getElementById("name-input").value = '';
-    // let test = new KeyboardEvent("keydown", {key: "H"});
-    // document.dispatchEvent(test);
-    for (let chars = 0; chars < array.length; chars++) {
-
-      let character = array[chars];
-      if (time === null) {
-        time = character.time;
-      } //else if (chars >= 1) {
-      //   time = texttimearray[chars - 1].time;
-      // }
-      //alert(time);
-      //time = null ? time = character.timestamp : time = texttimearray[chars - 1].timestamp;
-      //alert(chars);
-      //alert(JSON.stringify(character), character.timestamp - time);
-      setTimeout(
-        () => {
-          //alert(character.timestamp - time);
-
-          //  let event = new KeyboardEvent("keydown", {key: character.letter});
-          //  //alert("yes")
-          //  document.dispatchEvent(event);
-          replaystring = replaystring + character.letter;
-          replaycompletestr = replaystring;
-          replayincompletestr = origstring.slice(replaycompletestr.length);
-
-          //alert(character.letter);
-          document.getElementById("replaycompleted").innerHTML = replaycompletestr;
-          document.getElementById("replayincomplete").innerHTML = replayincompletestr;
-          //alert()
-
-        }, character.time - time
-      );
-
-    }
+  // This function generates a new quote for the user to type.
+  fetchNewQuote(); // This function fetches a new quote from an external API.
+  resetText(); // This function resets all variables for a new typing run.
+  setFetchQuoteState(true); // This sets the state of the quote-fetching process to true.
+  if (!data) return null; // If there is no quote data, this function returns null.
+  if (!quote) return null; // If there is no quote text, this function returns null.
 }
+
+const resetText = () => {         
+  // This function resets all variables for a new typing run.
+  document.getElementById("completed").innerHTML = ''; // This clears the completed section of the UI.
+  document.getElementById("current").innerHTML = origstr.at(0); // This sets the current letter to the first letter of the quote.
+  document.getElementById("incompletetext").innerHTML = origstr.slice(1); // This sets the incomplete text to the rest of the quote.
+  document.getElementById("name-input").type = "text"; // This sets the input field to accept text.
+  if(replaystate){ // If the replay state is active, this clears the replay section of the UI.
+    document.getElementById("replaycompleted").innerHTML = '';
+    document.getElementById("replayincomplete").innerHTML = '';
+  }
+  completestr = ''; // This sets the completed string to an empty string.
+  setreplaystate(false); // This sets the replay state to false.
+  setreplayracestate(false); // This sets the replay race state to false.
+  setreplayinitstate(false); // This sets the replay initialization state to false.
+  texttimearray = []; // This sets the text time array to an empty array.
+  currentstr = origstr.at(0); // This sets the current string to the first letter of the quote.
+  incompletestr = origstr.slice(1); // This sets the incomplete string to the rest of the quote.
+  setSolereplaystate(false); // This sets the solo replay state to false.
+  incorrectcount = 0; // This sets the incorrect count to 0.
+  wordcount = 0; // This sets the word count to 0.
+  startingtime = 0; // This sets the starting time to 0.
+  endingtime = 0; // This sets the ending time to 0.
+  finaltime = 0; // This sets the final time to 0.
+  wpm = 0; // This sets the words per minute to 0.
+  racecarpos = 0; // This sets the race car position to 0.
+  document.getElementById("racer").style.marginLeft = 0 + "px"; // This sets the race car position to 0.
+  document.getElementById("current").style.backgroundColor = 'yellow'; // This sets the background color of the current letter to yellow.
+  handleClearInput(); // This clears the input field.
+  setracestatus(""); // This sets the race status to an empty string.
+}
+
+const handleClearInput = () => { 
+  // This function clears the input field.
+  setInputValue(""); // This sets the input value to an empty string.
+  document.getElementById("name-input").value = ""; // This sets the input field to an empty string.
+};
+
+
+  const initreplayrace = (origstring = bestrunstate.str) => { 
+  // This function prepares the UI for the player to race against themselves.
+  // It takes an optional argument origstring which is the string that the player will race against. 
+  // If no argument is provided, it uses the string from bestrunstate.
+
+  // Reset the quote displayed on the UI
+  document.getElementById("completed").innerHTML = ''; 
+  document.getElementById("current").innerHTML = origstring.at(0);
+  document.getElementById("incompletetext").innerHTML = origstring.slice(1);
+
+  // Set the type of the input field to text
+  document.getElementById("name-input").type = "text";
+
+  // Reset the variables used to keep track of the race
+  completestr = '';
+  texttimearray = [];
+  currentstr = origstring.at(0);
+  incompletestr = origstring.slice(1);
+  incorrectcount = 0;
+  wordcount = 0;
+  startingtime = 0;
+  endingtime = 0;
+  finaltime = 0;
+  wpm = 0;
+  racecarpos = 0;
+
+  // Reset the position of the racecar on the UI
+  document.getElementById("racer").style.marginLeft = 0 + "px";
+
+  // Change the background color of the first character in the incomplete string to yellow
+  document.getElementById("current").style.backgroundColor = 'yellow';
+
+  // Reset the race status, clear the input field and show the race status
+  setracestatus("replay");
+  handleClearInput();
+  openracestatus();
+}
+
+
+function generalreplay(array, origstring) { 
+  // This function is the replay function. It takes two arguments - an array of objects that represent the user's typing,
+  // and the original string that the user was racing against.
+
+  let time = null;
+
+  // Reset the value of the input field
+  document.getElementById("name-input").value = '';
+
+  // Loop through the array of characters that the user typed
+  for (let chars = 0; chars < array.length; chars++) {
+    let character = array[chars];
+
+    // If time is null, set it to the time of the current character. This is used to calculate the delay between each character.
+    if (time === null) {
+      time = character.time;
+    }
+
+    // Use setTimeout to delay the replay of each character by the appropriate amount of time
+    setTimeout(() => {
+      // Append the current character to the replay string
+      replaystring = replaystring + character.letter;
+      replaycompletestr = replaystring;
+      replayincompletestr = origstring.slice(replaycompletestr.length);
+
+      // Update the completed and incomplete strings in the UI
+      document.getElementById("replaycompleted").innerHTML = replaycompletestr;
+      document.getElementById("replayincomplete").innerHTML = replayincompletestr;
+
+    }, character.time - time);
+  }
+}
+
   const replaytext = () => { //this is the function called to just replay the text
     setreplaystate(true);
     setSolereplaystate(true);
@@ -239,65 +240,85 @@ document.getElementById("name-input").value = '';
     //document.getElementById("name-input").type = "text";
   }
 
-function CountdownTimer() { //this is the function to countdown before the player replays against themself
-  const [secondsLeft, setSecondsLeft] = useState(3);
+function CountdownTimer() { // Function to countdown before the player replays against themselves
+  const [secondsLeft, setSecondsLeft] = useState(3); // Declare state for seconds left and set it to 3 initially
   useEffect(() => {
+    // Use an effect to update the seconds left state every second
     const intervalId = setInterval(() => {
-      setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
+      setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1); // Subtract 1 from previous seconds left
     }, 1000);
 
+    // Clear the interval when the component unmounts or the state changes
     return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
+    // Use an effect to do something when secondsLeft reaches 0
     if (secondsLeft === 0) {
-      // Do something here after the timer is finished
+      // Call the Replaybesttext() function when the timer is finished
       Replaybesttext();
     }
   }, [secondsLeft]);
 
   return (
     <div>
-      <h1>{secondsLeft}</h1>
+      <h1>{secondsLeft}</h1> // Render the seconds left in an h1 tag
     </div>
   );
 }
 
+
 function Replayer(){
   useEffect(() => {
+    // Check if the replaystate variable is true
     if (replaystate) {
+      // Set the whiteSpace property of two elements to "pre-wrap" to preserve spacing
       document.getElementById("replaycompleted").style.whiteSpace = "pre-wrap";
       document.getElementById("replayincomplete").style.whiteSpace = "pre-wrap";
+      // Hide the "name-input" element
       document.getElementById("name-input").type = "hidden";
+      // Initialize some variables to empty strings
       let replayincompletestr = "";
       let replaycompletestr = "";
       let replaystring = "";
+      // Clear the contents of two elements
       document.getElementById("replaycompleted").innerHTML = "";
       document.getElementById("replayincomplete").innerHTML = "";
 
+      // Initialize a variable to track the time delay between characters
       let time = null;
 
+      // Loop through each character in the texttimearray array
       for (let chars = 0; chars < texttimearray.length; chars++) {
         let character = texttimearray[chars];
+        // If this is the first character, set the time variable to its time
         if (time === null) {
           time = character.time;
         }
 
+        // Create a closure to preserve the values of the character and time variables
         (function (character, time) {
+          // Use a setTimeout function to delay the output of each character
           setTimeout(() => {
+            // Add the character's letter to the replaystring variable
             replaystring = replaystring + character.letter;
+            // Set the replaycompletestr variable to the full replaystring
             replaycompletestr = replaystring;
+            // Set the replayincompletestr variable to the remaining characters in the original string
             replayincompletestr = origstr.slice(replaycompletestr.length);
 
+            // Set the innerHTML of two elements to display the completed and incomplete text
             document.getElementById("replaycompleted").innerHTML = replaycompletestr;
             document.getElementById("replayincomplete").innerHTML = replayincompletestr;
-          }, character.time - time);
+          }, character.time - time); // Delay the output of this character based on its time and the time of the first character
         })(character, time);
       }
+      // Set the replaystate variable to false to stop the loop from running again
       setreplaystate(false);
     }
-  }, [replaystate]);
+  }, [replaystate]); // This function runs whenever the replaystate variable changes
 
+  // Return some HTML elements to display the completed and incomplete text
   return(
     <div className="generaltext">
         <span className="replaycomplete" id="replaycompleted" style={{ whiteSpace: "pre-wrap" }}>
@@ -308,6 +329,7 @@ function Replayer(){
   );
 
 }
+
 
 // function Replayagainstself(){        //botched attempt at trying to use useEffect for replaying against self
 
@@ -359,22 +381,32 @@ function Replayer(){
 //   );
 // }
 const Replaybesttext = () => { //this is the code for replaying against self, it's quite similar to the normal replay function
-    //sCountdownTimer();
+    // Set replay race state to true
+    setreplayracestate(true);
 
-   setreplayracestate(true);
-   initreplayrace(bestrunstate.str);
+    // Initialize replay race with the best run state string
+    initreplayrace(bestrunstate.str);
+
+    // Set the style of the replay elements
     document.getElementById("replaycompleted").style.whiteSpace = "pre-wrap";
     document.getElementById("replayincomplete").style.whiteSpace = "pre-wrap";
-    //document.getElementById("name-input").type = "hidden";
-    replayincompletestr = '';
+
+    // Reset the replay strings
+    replayincompletestr = '';// 
     replaycompletestr = '';
     replaystring = '';
+
+    // Clear the replay elements
     document.getElementById("replaycompleted").innerHTML = '';
     document.getElementById("replayincomplete").innerHTML = '';
 
+    // Clear the user input field
     document.getElementById("name-input").value = '';
+
+    // Call the general replay function with the best run state time array and string
     generalreplay(bestrunstate.timearray, bestrunstate.str);
 }
+
 
   const showreplayagainstself = () => { //these are to control whether the replay against self button is displayed
     setreplaybtnstate(true);
@@ -482,57 +514,59 @@ if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run
         }
         onInput={(e) => {
 
+            // Get the name input element and the current character
+            const nameInput = document.getElementById("name-input");
+            currentstr = document.getElementById("current").innerHTML;
 
-          const nameInput = document.getElementById("name-input");
-          currentstr = document.getElementById("current").innerHTML;
-          //alert(currentstr + '1')
-          if (backspacebool === false) {
-            if (racestatus === "") {
-              openracestatus();
-            }
-            //currentstr = document.getElementById("current");
-            if (nameInput.value.at(-1) !== currentstr) {
-              incorrectcount += 1;
+            // If backspacebool is false (meaning a character was added)...
+            if (backspacebool === false) {
+
+              // If the race has not started yet, open the race status
+              if (racestatus === "") {
+                openracestatus();
+              }
+
+              // If the last character entered is not the current character, increment incorrectcount
+              if (nameInput.value.at(-1) !== currentstr) {
+                incorrectcount += 1;
+              } else {
+                // If the last character entered is the current character, add it and update the texttimearray
+                addchar(nameInput.value.at(-1));
+              }
+
+              // Update the current character, completed string, and incomplete string
+              [completestr, incompletestr, currentstr] = Updatecurrentcharacter(nameInput.value, currentstr, origstr);
+
             } else {
-              addchar(nameInput.value.at(-1));
-              //texttimearray.append
+              // If backspacebool is true (meaning a character was deleted), update the completed string, incomplete string, and current character
+              [completestr, incompletestr, currentstr] = Backspaced(nameInput.value, origstr);
+              document.getElementById("current").style.backgroundColor = 'yellow';
+              backspacebool = false;
             }
-            [completestr, incompletestr, currentstr] = Updatecurrentcharacter(nameInput.value, currentstr, origstr);
-            //alert(currentstr + '2')
 
-          } else {
-            [completestr, incompletestr, currentstr] = Backspaced(nameInput.value, origstr);
-            document.getElementById("current").style.backgroundColor = 'yellow';
-            backspacebool = false;
-          }
+            // Update the completed, current, and incomplete strings on the UI
+            document.getElementById("completed").innerHTML = completestr;
+            document.getElementById("current").innerHTML = currentstr;
+            document.getElementById("incompletetext").innerHTML = incompletestr;
 
-          document.getElementById("completed").innerHTML = completestr;
-          document.getElementById("current").innerHTML = currentstr;
-          //alert(currentstr + '3')
-          //(typeof currentstr !== 'undefined') ? (document.getElementById("current").innerHTML = currentstr) : (currentstr = '');
-          document.getElementById("incompletetext").innerHTML = incompletestr;
+            // If a word has been completed, update the word count
+            if (nameInput.value.at(-1) === " ") {
+              wordcount = Wordcounter(completestr);
+            }
 
+            // If the race is completed, close the race status and update the word count and WPM
+            if (completestr.length === origstr.length) {
+              closeracestatus();
+              wordcount = Wordcounter(origstr) + 1;
+              wpm = (((wordcount) / finaltime) * 60).toFixed(0);
+            }
 
-          if (nameInput.value.at(-1) === " ") {
-            wordcount = Wordcounter(completestr);
-            //document.getElementById("Wordcounter").innerHTML = wordcount;
-          }
-          if (completestr.length === origstr.length) {
-            closeracestatus();
-            //document.getElementById("incorrectcount").innerHTML = incorrectcount;
-            wordcount = Wordcounter(origstr) + 1;
-            wpm = (((wordcount) / finaltime) * 60).toFixed(0);
-
-            //accuracy = Math.max(((origstr.length - incorrectcount) / origstr.length * 100).toFixed(1), 0);
-            //document.getElementById("wordsperminute").innerHTML = wpm;
-
-            //alert(((origstr.length - incorrectcount) / origstr.length) * 100 + '%');
+            // Update the race car position on the UI
+            racecarpos = (completestr.length / origstr.length) * Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.8;
+            document.getElementById("racer").style.marginLeft = racecarpos + "px";
 
           }
-          racecarpos = (completestr.length / origstr.length) * Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.8;
-          document.getElementById("racer").style.marginLeft = racecarpos + "px";
 
-        }
         }
       />
       {racestatus === "started" && <span
