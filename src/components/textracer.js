@@ -453,12 +453,12 @@ if (bestrunstate.timearray.length !== 0){ //decides whether to store the new run
 
   function addchar(letter) { //logs the time and chararcter whenever a correct letter is entered
 
-    if (starttime === null) {
+    if (starttime === null) { //defines case for first character where the start time may not have been defined yet
       starttime = Date.now();
     }
 
-    let timestamp = Date.now() - starttime;
-    texttimearray.push(new Char(timestamp, letter));
+    let timestamp = Date.now() - starttime; //calculates how many milliseconds have elapsed since the start of the run
+    texttimearray.push(new Char(timestamp, letter)); //adds new Char object to texttimearray with the calculated timestamp and letter
   }
 
   return (
