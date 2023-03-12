@@ -454,7 +454,8 @@ const Replaybesttext = () => { //this is the code for replaying against self, it
     document.getElementById("incompletetext").innerHTML = "";
     setreplayracestate(false);
     setracestatus("over");
-    if(localStorage.getItem("bestrun") !== null){
+    const tempreplaystate = JSON.parse(localStorage.getItem("bestrun"));
+    if(Object.keys(tempreplaystate).length && tempreplaystate){
       setbestrunstate(JSON.parse(localStorage.getItem("bestrun")));
       alert(localStorage.getItem("bestrun"));
     }
