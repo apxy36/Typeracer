@@ -6,12 +6,12 @@ function Replaybutton(props){
   function replayagainstself() {
     props.onReplayingAgainstSelf();
   }
-  function leaveself() {
-    props.onLeaving();
-  }
+//   function leaveself() {
+//     props.Leaving();
+//   }
     return(
         
-        <button className = " replay-btn reset-btn" onClick={replay} onMouseOver={replayagainstself} onMouseLeave={leaveself}>Replay</button>
+        <button className = " replay-btn reset-btn" onClick={replay} onMouseOver={replayagainstself} >Replay</button>
     
     )
 }

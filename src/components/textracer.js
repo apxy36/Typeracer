@@ -17,18 +17,22 @@ let wpm = 0;
 let racecarpos = 0;
 let texttimearray = [];
 let replaystring = "";
+let countdown;
 
 
 // const teststr = QuotableAPI();
 // alert(teststr);
 function Typingengine() {
-  const [inputvalue, setinputvalue] = useState("");
+  //const [inputvalue, setinputvalue] = useState("");
   //const nameInput = document.getElementById("name-input"); 
   const [racestatus, setracestatus] = useState("");
   const [quote, setQuote] = useState("");
   const [initial, setInitial] = useState(true);
   const [replaystate, setreplaystate] = useState(false);
   const [replaybtnstate, setreplaybtnstate] = useState(false);
+  const [bestrunstate, setbestrunstate] = useState({timearray: [], str: ""});
+  const [replayracestate, setreplayracestate] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   //alert('yes')
   //   useEffect(() => {
   //   fetch("http://api.quotable.io/random")
@@ -57,7 +61,11 @@ function Typingengine() {
   }
 
   useEffect(() => {
-    fetchNewQuote();
+    if(replayracestate === false){
+      fetchNewQuote();
+      //alert("found");
+    }
+    
     setInitial(true);
   }, []);
 
@@ -72,7 +80,7 @@ function Typingengine() {
   // }
   if (!data) return null;
   if (!quote) return null;
-  const origstr = quote;
+  let origstr = quote;
 
 
   let completestr = '';
@@ -121,10 +129,14 @@ function Typingengine() {
     document.getElementById("incompletetext").innerHTML = origstr.slice(1);
     document.getElementById("name-input").type = "text";
     //document.getElementById("replaystr").innerHTML = '';
-    document.getElementById("replaycompleted").innerHTML = '';
+    if(replaystate){
+      document.getElementById("replaycompleted").innerHTML = '';
     document.getElementById("replayincomplete").innerHTML = '';
+    }
+    
     completestr = '';
     setreplaystate(false);
+    setreplayracestate(false);
     texttimearray = [];
     currentstr = origstr.at(0);
     incompletestr = origstr.slice(1);
@@ -141,27 +153,55 @@ function Typingengine() {
     setracestatus("");
   }
 
-  const replaytext = () => {
-    setreplaystate(true);
-    document.getElementById("replaycompleted").style.whiteSpace = "pre-wrap";
-    document.getElementById("replayincomplete").style.whiteSpace = "pre-wrap";
-    document.getElementById("name-input").type = "hidden";
-    replayincompletestr = '';
-    replaycompletestr = '';
-    replaystring = '';
-    document.getElementById("replaycompleted").innerHTML = '';
-    document.getElementById("replayincomplete").innerHTML = '';
+  const handleClearClick = () => {
+    setInputValue("");
+    document.getElementById("name-input").value = "";
+  };
 
+
+  const initreplayrace = (origstring) => {
+    //document.getElementById("name-input").value = '';
+    origstr = origstring;
+    document.getElementById("completed").innerHTML = '';
+    document.getElementById("current").innerHTML = origstring.at(0);
+    document.getElementById("incompletetext").innerHTML = origstring.slice(1);
+    document.getElementById("name-input").type = "text";
     //document.getElementById("replaystr").innerHTML = '';
-    //let data = JSON.stringify(texttimearray);
-    //alert(data);
-    //resetText2();
-    let time = null;
+    setreplayracestate(false);
+    if(replaystate){
+      document.getElementById("replaycompleted").innerHTML = '';
+    document.getElementById("replayincomplete").innerHTML = '';
+    }
+    setreplaybtnstate(true);
+    completestr = '';
+    texttimearray = [];
+    currentstr = origstring.at(0);
+    incompletestr = origstring.slice(1);
+    incorrectcount = 0;
+    wordcount = 0;
+    startingtime = 0;
+    endingtime = 0;
+    finaltime = 0;
+    wpm = 0;
+    racecarpos = 0;
+    document.getElementById("racer").style.marginLeft = 0 + "px";
+    document.getElementById("current").style.backgroundColor = 'yellow';
+    //document.getElementById("Wordcounter").innerHTML = 0;
+    setracestatus("replay");
+    handleClearClick();
+    openracestatus();
+  }
+
+
+
+function generalreplay(array, origstring){
+let time = null;
+document.getElementById("name-input").value = '';
     // let test = new KeyboardEvent("keydown", {key: "H"});
     // document.dispatchEvent(test);
-    for (let chars = 0; chars < texttimearray.length; chars++) {
+    for (let chars = 0; chars < array.length; chars++) {
 
-      let character = texttimearray[chars];
+      let character = array[chars];
       if (time === null) {
         time = character.time;
       } //else if (chars >= 1) {
@@ -180,7 +220,7 @@ function Typingengine() {
           //  document.dispatchEvent(event);
           replaystring = replaystring + character.letter;
           replaycompletestr = replaystring;
-          replayincompletestr = origstr.slice(replaycompletestr.length);
+          replayincompletestr = origstring.slice(replaycompletestr.length);
 
           //alert(character.letter);
           document.getElementById("replaycompleted").innerHTML = replaycompletestr;
@@ -191,41 +231,90 @@ function Typingengine() {
       );
 
     }
+}
+  const replaytext = () => {
+    setreplaystate(true);
+    document.getElementById("replaycompleted").style.whiteSpace = "pre-wrap";
+    document.getElementById("replayincomplete").style.whiteSpace = "pre-wrap";
+    document.getElementById("name-input").type = "hidden";
+    replayincompletestr = '';
+    replaycompletestr = '';
+    replaystring = '';
+    document.getElementById("replaycompleted").innerHTML = '';
+    document.getElementById("replayincomplete").innerHTML = '';
+    generalreplay(texttimearray, origstr);
+    //document.getElementById("replaystr").innerHTML = '';
+    //let data = JSON.stringify(texttimearray);
+    //alert(data);
+    //resetText2();
+    
 
     //document.getElementById("name-input").type = "text";
   }
+
+function CountdownTimer() {
+  const [secondsLeft, setSecondsLeft] = useState(3);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
+      countdown = secondsLeft;
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    if (secondsLeft === 0) {
+      // Do something here after the timer is finished
+      Replaybesttext();
+    }
+  }, [secondsLeft]);
+
+  return (
+    <div>
+      <h1>{secondsLeft}</h1>
+    </div>
+  );
+}
+
+function callback(){
+  alert("Timer finished!");
+}
+const Replaybesttext = () => {
+    //sCountdownTimer();
+
+   setreplayracestate(true);
+   initreplayrace(bestrunstate.str);
+    document.getElementById("replaycompleted").style.whiteSpace = "pre-wrap";
+    document.getElementById("replayincomplete").style.whiteSpace = "pre-wrap";
+    //document.getElementById("name-input").type = "hidden";
+    replayincompletestr = '';
+    replaycompletestr = '';
+    replaystring = '';
+    document.getElementById("replaycompleted").innerHTML = '';
+    document.getElementById("replayincomplete").innerHTML = '';
+
+    document.getElementById("name-input").value = '';
+    generalreplay(bestrunstate.timearray, bestrunstate.str);
+}
 
   const showreplayagainstself = () => {
     setreplaybtnstate(true);
   }
   const hidereplayagainstself = () => {
+    if(replayracestate) {return;}
     setreplaybtnstate(false);
   }
   const replayagainstself = () => {
-
+    setreplaystate(true);
+    //CountdownTimer();
+    //alert(bestrunstate);
+    setreplayracestate(true);
+    //Replaybesttext(); 
+    document.getElementById("name-input").type = "text";
   }
 
-  function resetText2() {
-    document.getElementById("completed").innerHTML = '';
-    document.getElementById("current").innerHTML = origstr.at(0);
-    document.getElementById("incompletetext").innerHTML = origstr.slice(1);
-    document.getElementById("name-input").value = '';
-    texttimearray = [];
-    completestr = '';
-    currentstr = origstr.at(0);
-    incompletestr = origstr.slice(1);
-    incorrectcount = 0;
-    wordcount = 0;
-    startingtime = 0;
-    endingtime = 0;
-    finaltime = 0;
-    wpm = 0;
-    racecarpos = 0;
-    document.getElementById("racer").style.marginLeft = 0 + "px";
-    document.getElementById("current").style.backgroundColor = 'yellow';
-    //document.getElementById("Wordcounter").innerHTML = 0;
-    setracestatus("");
-  }
+
 
   function openracestatus() {
     startingtime = Date.now();
@@ -238,8 +327,22 @@ function Typingengine() {
     setInitial(false);
     endingtime = Date.now();
     finaltime = ((endingtime - startingtime) / 1000).toFixed(2);
+    
     setracestatus("over");
-
+    alert(bestrunstate);
+if (bestrunstate.timearray.length !== 0){
+      if (bestrunstate.timearray[bestrunstate.timearray.length - 2].time < finaltime){
+        setbestrunstate(() => ({
+          timearray: texttimearray,
+          str: origstr,
+        }));
+      }
+    } else {
+      setbestrunstate(() => ({
+          timearray: texttimearray,
+          str: origstr,
+        }));
+    }
   }
 
   function addchar(letter) {
@@ -284,9 +387,9 @@ function Typingengine() {
 
         id="name-input"
 
-        value={inputvalue}
+        value={inputValue}
         onChange={(e) => {
-          setinputvalue(e.target.value)
+          setInputValue(e.target.value)
 
         }}
         onKeyDown={(e) => {
@@ -297,7 +400,7 @@ function Typingengine() {
 
           }
           if (e.key === "Escape") {
-            resetText2();
+            resetText();
           }
 
 
@@ -386,7 +489,10 @@ function Typingengine() {
       <br></br>
       <img src={Racetrack} className="racetrack" id="track" alt=""></img>
       <img src={Racecar} className="racecar" id="racer" alt=""></img>
+        <br></br><br></br>
 
+      {replayracestate && <CountdownTimer />}
+      <br></br>
     </div>
   );
 
