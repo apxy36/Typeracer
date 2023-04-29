@@ -429,15 +429,18 @@ function Typingengine() {
     if (replayracestate || replayinitstate) { return; }
     setreplaybtnstate(false);
   }
-  const replayagainstself = () => { //this is the function that clicking the replay against self button calls
+  const replayagainstself = () => {
+    setbestrunstate(JSON.parse(localStorage.getItem("bestrun"))); //this is the function that clicking the replay against self button calls
     setreplaystate(true);
     origstr = bestrunstate.str;
     handleClearInput();
+    setracestatus("replay");
     //CountdownTimer();
     //alert(bestrunstate);
     setreplayinitstate(true);
     //Replaybesttext(); 
     document.getElementById("name-input").type = "text";
+    setreplaybtnstate(false);
   }
 
 
