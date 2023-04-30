@@ -430,6 +430,7 @@ const Replaybesttext = () => { //this is the code for replaying against self, it
     setreplaybtnstate(false);
   }
   const replayagainstself = () => {
+    
     setbestrunstate(JSON.parse(localStorage.getItem("bestrun"))); //this is the function that clicking the replay against self button calls
     setreplaystate(true);
     origstr = bestrunstate.str;
