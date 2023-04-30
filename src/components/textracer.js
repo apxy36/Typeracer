@@ -459,9 +459,9 @@ const Replaybesttext = () => { //this is the code for replaying against self, it
     setreplayracestate(false);
     setracestatus("over");
     const tempreplaystate = JSON.parse(localStorage.getItem("bestrun"));
-    if(Object.keys(tempreplaystate).length && tempreplaystate){
-      setbestrunstate(JSON.parse(localStorage.getItem("bestrun")));
-      alert(localStorage.getItem("bestrun"));
+    if(localStorage.getItem("bestrun") !== null){//Object.keys(tempreplaystate).length && tempreplaystate
+      setbestrunstate(JSON.parse(localStorage.getItem("bestrun"))); //finds best run state in local storage if it exists
+     // alert(tempreplaystate, localStorage.getItem("bestrun"));
     }
 if (bestrunstate.timearray.length !== 0){
    //decides whether to store the new run in the array
@@ -471,6 +471,7 @@ if (bestrunstate.timearray.length !== 0){
           timearray: texttimearray,
           str: origstr,
         }));
+        
       }
       localStorage.setItem("bestrun", JSON.stringify(bestrunstate));
     } else {
@@ -479,8 +480,9 @@ if (bestrunstate.timearray.length !== 0){
           str: origstr,
         }));
         localStorage.setItem("bestrun", JSON.stringify(bestrunstate));
+         //alert(texttimearray);
     }
-    
+   //alert(bestrunstate.timearray.length)
   }
   function Storebestrun(){
     const [storestate, setStorestate] = useState(false);
